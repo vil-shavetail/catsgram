@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 // Указываем, что класс UserService - является бином и его
 // нужно добавить в контекст приложения
@@ -79,6 +80,15 @@ public class UserService {
                 .orElse(0);
         return ++currentMaxId;
 
+    }
+
+    // вспомогательный метод для поиска пользователя по id
+    public Optional<User> findUserById(Long authorId) {
+        Optional<User> userOptional = Optional.empty();
+        if (users.containsKey(authorId)) {
+            userOptional = Optional.of(users.get(authorId));
+        }
+        return userOptional;
     }
 
 }
