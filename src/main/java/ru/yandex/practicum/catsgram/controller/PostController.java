@@ -1,10 +1,12 @@
 package ru.yandex.practicum.catsgram.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
@@ -30,4 +32,14 @@ public class PostController {
     public Post update(@RequestBody Post newPost) {
         return postService.update(newPost);
     }
+
+    @GetMapping("/{postId}")
+    public Optional<Post> findPostById(@PathVariable Long postId) {
+        if (postService.findPostById((long) postId).isEmpty()) {
+            throw new ConditionsNotMetException("Пост с id = " + postId + " не найден");
+        } else {
+            return postService.findPostById((long) postId);
+        }
+    }
+
 }

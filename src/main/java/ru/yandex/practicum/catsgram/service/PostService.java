@@ -10,15 +10,19 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 // Указываем, что класс PostService - является бином и его
 // нужно добавить в контекст приложения
 @Service
 public class PostService {
     private final Map<Long, Post> posts = new HashMap<>();
+    private final UserService userService;
 
     @Autowired
-    public UserService userService;
+    PostService(UserService userService) {
+        this.userService = userService;
+    }
 
     public Collection<Post> findAll() {
         return posts.values();
@@ -28,7 +32,7 @@ public class PostService {
         if (post.getDescription() == null || post.getDescription().isBlank()) {
             throw new ConditionsNotMetException("Описание не может быть пустым");
         }
-        if (userService.findUserById(post.getAuthorId()).isEmpty()) {
+        if (userService.findUserById(post.getAuthorId()) == null) {
             throw new ConditionsNotMetException("Автор с id = " + post.getAuthorId() + " не найден");
         }
         post.setId(getNextId());
@@ -59,5 +63,13 @@ public class PostService {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
+    }
+
+    public Optional<Post> findPostById(Long postId) {
+        Optional<Post> postOptional = Optional.empty();
+        if (posts.containsKey(postId)) {
+            postOptional = Optional.of(posts.get(postId));
+        }
+        return postOptional;
     }
 }

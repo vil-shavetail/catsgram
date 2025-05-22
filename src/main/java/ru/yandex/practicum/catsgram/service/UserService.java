@@ -83,10 +83,10 @@ public class UserService {
     }
 
     // вспомогательный метод для поиска пользователя по id
-    public Optional<User> findUserById(Long authorId) {
+    public Optional<User> findUserById(Long userId) {
         Optional<User> userOptional = Optional.empty();
-        if (users.containsKey(authorId)) {
-            userOptional = Optional.of(users.get(authorId));
+        if (users.containsKey(userId)) {
+            userOptional = Optional.of(users.get(userId));
         }
         return userOptional;
     }
